@@ -3,6 +3,7 @@ package com.example.smartshopapi.service.impl;
 import com.example.smartshopapi.dto.LoginRequestDTO;
 import com.example.smartshopapi.dto.UserResponseDTO;
 import com.example.smartshopapi.entity.User;
+import com.example.smartshopapi.mapper.UserMapper;
 import com.example.smartshopapi.repository.UserRepository;
 import com.example.smartshopapi.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
     
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
     
     @Override
     public UserResponseDTO login(LoginRequestDTO loginRequest, HttpServletRequest request) {
@@ -27,11 +29,7 @@ public class AuthServiceImpl implements AuthService {
         HttpSession session = request.getSession();
         session.setAttribute("user", user);
         
-        return UserResponseDTO.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .role(user.getRole())
-                .build();
+        return userMapper.toResponseDTO(user);
     }
     
     @Override
@@ -55,10 +53,6 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Not logged in");
         }
         
-        return UserResponseDTO.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .role(user.getRole())
-                .build();
+        return userMapper.toResponseDTO(user);
     }
 }
