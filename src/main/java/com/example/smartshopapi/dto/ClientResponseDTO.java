@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ClientResponseDTO {
     private Long id;
-    private String nom;
+    private String name;
     private String email;
     private CustomerTier tier;
     private Integer totalOrders;

@@ -56,4 +56,10 @@ public class ClientController {
         Pageable pageable = PageRequest.of(page, size);
         return clientService.getAllClients(pageable);
     }
+    
+    @GetMapping("/{id}/profile")
+    public ClientResponseDTO getClientProfile(@PathVariable Long id, HttpServletRequest request) {
+        securityService.requireAdminOrSameClient(request, id);
+        return clientService.getClientById(id);
+    }
 }

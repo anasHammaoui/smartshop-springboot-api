@@ -1,6 +1,5 @@
 package com.example.smartshopapi.entity;
 
-import com.example.smartshopapi.enums.CustomerTier;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,12 +12,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "clients")
+@Table(name = "products")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Client {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,25 +25,16 @@ public class Client {
     @Column(nullable = false)
     private String name;
     
-    @Column(unique = true, nullable = false)
-    private String email;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @Builder.Default
-    private CustomerTier tier = CustomerTier.BASIC;
-    
-    @Column(nullable = false)
-    @Builder.Default
-    private Integer totalOrders = 0;
-    
     @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal unitPrice;
+    
+    @Column(nullable = false)
     @Builder.Default
-    private BigDecimal totalSpent = BigDecimal.ZERO;
+    private Integer stock = 0;
     
-    private LocalDateTime firstOrderDate;
-    
-    private LocalDateTime lastOrderDate;
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean deleted = false;
     
     @CreationTimestamp
     private LocalDateTime createdAt;

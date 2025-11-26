@@ -1,10 +1,12 @@
 package com.example.smartshopapi.config;
 
 import com.example.smartshopapi.entity.Client;
+import com.example.smartshopapi.entity.Product;
 import com.example.smartshopapi.entity.User;
 import com.example.smartshopapi.enums.CustomerTier;
 import com.example.smartshopapi.enums.UserRole;
 import com.example.smartshopapi.repository.ClientRepository;
+import com.example.smartshopapi.repository.ProductRepository;
 import com.example.smartshopapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -20,6 +22,7 @@ public class DataInitializer implements CommandLineRunner {
     
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
+    private final ProductRepository productRepository;
     
     @Override
     public void run(String... args) throws Exception {
@@ -45,7 +48,7 @@ public class DataInitializer implements CommandLineRunner {
         
         if (clientRepository.count() == 0) {
             Client client1 = Client.builder()
-                    .nom("TechCorp SARL")
+                    .name("TechCorp SARL")
                     .email("contact@techcorp.ma")
                     .tier(CustomerTier.SILVER)
                     .totalOrders(5)
@@ -54,7 +57,7 @@ public class DataInitializer implements CommandLineRunner {
             clientRepository.save(client1);
             
             Client client2 = Client.builder()
-                    .nom("InfoSys Ltd")
+                    .name("InfoSys Ltd")
                     .email("admin@infosys.ma")
                     .tier(CustomerTier.GOLD)
                     .totalOrders(12)
@@ -63,7 +66,7 @@ public class DataInitializer implements CommandLineRunner {
             clientRepository.save(client2);
             
             Client client3 = Client.builder()
-                    .nom("Digital Solutions")
+                    .name("Digital Solutions")
                     .email("contact@digitalsol.ma")
                     .tier(CustomerTier.BASIC)
                     .totalOrders(1)
@@ -72,6 +75,45 @@ public class DataInitializer implements CommandLineRunner {
             clientRepository.save(client3);
             
             System.out.println("Sample clients created");
+        }
+        
+        if (productRepository.count() == 0) {
+            Product product1 = Product.builder()
+                    .name("Laptop Dell Inspiron 15")
+                    .unitPrice(new BigDecimal("8500.00"))
+                    .stock(25)
+                    .build();
+            productRepository.save(product1);
+            
+            Product product2 = Product.builder()
+                    .name("HP Printer LaserJet Pro")
+                    .unitPrice(new BigDecimal("2200.00"))
+                    .stock(15)
+                    .build();
+            productRepository.save(product2);
+            
+            Product product3 = Product.builder()
+                    .name("Wireless Mouse Logitech")
+                    .unitPrice(new BigDecimal("150.00"))
+                    .stock(50)
+                    .build();
+            productRepository.save(product3);
+            
+            Product product4 = Product.builder()
+                    .name("External Hard Drive 1TB")
+                    .unitPrice(new BigDecimal("650.00"))
+                    .stock(30)
+                    .build();
+            productRepository.save(product4);
+            
+            Product product5 = Product.builder()
+                    .name("Monitor Samsung 24 inch")
+                    .unitPrice(new BigDecimal("1800.00"))
+                    .stock(20)
+                    .build();
+            productRepository.save(product5);
+            
+            System.out.println("Sample products created");
         }
     }
 }

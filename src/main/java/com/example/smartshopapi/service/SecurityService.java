@@ -7,4 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 public interface SecurityService {
     User getCurrentUser(HttpServletRequest request);
     void requireAdmin(HttpServletRequest request);
+    void requireAuthenticated(HttpServletRequest request);
+    void requireAdminOrSameClient(HttpServletRequest request, Long clientId);
 }
