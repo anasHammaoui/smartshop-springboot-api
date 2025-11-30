@@ -3,6 +3,7 @@ package com.example.smartshopapi.service.impl;
 import com.example.smartshopapi.dto.ProductRequestDTO;
 import com.example.smartshopapi.dto.ProductResponseDTO;
 import com.example.smartshopapi.entity.Product;
+import com.example.smartshopapi.exception.ResourceNotFoundException;
 import com.example.smartshopapi.mapper.ProductMapper;
 import com.example.smartshopapi.repository.ProductRepository;
 import com.example.smartshopapi.service.ProductService;
@@ -32,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDTO getProductById(Long id) {
         Product product = productRepository.findActiveById(id);
         if (product == null) {
-            throw new RuntimeException("Product not found with ID: " + id);
+            throw new ResourceNotFoundException("Product not found with ID: " + id);
         }
         return productMapper.toResponseDTO(product);
     }
@@ -41,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO productRequest) {
         Product product = productRepository.findActiveById(id);
         if (product == null) {
-            throw new RuntimeException("Product not found with ID: " + id);
+            throw new ResourceNotFoundException("Product not found with ID: " + id);
         }
         
         productMapper.updateEntityFromDTO(productRequest, product);
@@ -53,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
         Product product = productRepository.findActiveById(id);
         if (product == null) {
-            throw new RuntimeException("Product not found with ID: " + id);
+            throw new ResourceNotFoundException("Product not found with ID: " + id);
         }
         
         product.setDeleted(true);

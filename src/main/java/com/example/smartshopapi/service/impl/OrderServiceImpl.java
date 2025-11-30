@@ -5,6 +5,8 @@ import com.example.smartshopapi.dto.OrderRequestDTO;
 import com.example.smartshopapi.dto.OrderResponseDTO;
 import com.example.smartshopapi.entity.*;
 import com.example.smartshopapi.enums.OrderStatus;
+import com.example.smartshopapi.exception.InsufficientStockException;
+import com.example.smartshopapi.exception.ResourceNotFoundException;
 import com.example.smartshopapi.mapper.OrderMapper;
 import com.example.smartshopapi.repository.*;
 import com.example.smartshopapi.service.FidelityService;
@@ -39,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponseDTO createOrder(OrderRequestDTO orderRequest) {
         Client client = clientRepository.findById(orderRequest.getClientId())
-                .orElseThrow(() -> new RuntimeException("Client not found with ID: " + orderRequest.getClientId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found with ID: " + orderRequest.getClientId()));
         Order order = Order.builder()
                 .client(client)
                 .orderItems(new ArrayList<>())
@@ -52,14 +54,14 @@ public class OrderServiceImpl implements OrderService {
         for (OrderItemRequestDTO itemRequest : orderRequest.getItems()) {
             Product product = productRepository.findActiveById(itemRequest.getProductId());
             if (product == null) {
-                throw new RuntimeException("Product not found with ID: " + itemRequest.getProductId());
+                throw new ResourceNotFoundException("Product not found with ID: " + itemRequest.getProductId());
             }
             
 
             if (product.getStock() < itemRequest.getQuantity()) {
                 order.setStatus(OrderStatus.REJECTED);
                 orderRepository.save(order);
-                throw new RuntimeException("Insufficient stock for product: " + product.getName());
+                throw new InsufficientStockException("Insufficient stock for product: " + product.getName() + ". Available: " + product.getStock() + ", Requested: " + itemRequest.getQuantity());
             }
             
 
@@ -120,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     public OrderResponseDTO getOrderById(Long id) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
         return orderMapper.toResponseDTO(order);
     }
     
@@ -141,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponseDTO updateOrderStatus(Long id, OrderStatus status) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with ID: " + id));
         
 
         if (order.getStatus() == OrderStatus.CONFIRMED || 
