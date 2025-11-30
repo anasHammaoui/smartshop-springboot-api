@@ -2,7 +2,9 @@ package com.example.smartshopapi.controller;
 
 import com.example.smartshopapi.dto.ClientRequestDTO;
 import com.example.smartshopapi.dto.ClientResponseDTO;
+import com.example.smartshopapi.dto.OrderResponseDTO;
 import com.example.smartshopapi.service.ClientService;
+import com.example.smartshopapi.service.OrderService;
 import com.example.smartshopapi.service.SecurityService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class ClientController {
     
     private final ClientService clientService;
+    private final OrderService orderService;
     private final SecurityService securityService;
     
     @PostMapping
@@ -61,5 +64,16 @@ public class ClientController {
     public ClientResponseDTO getClientProfile(@PathVariable Long id, HttpServletRequest request) {
         securityService.requireAdminOrSameClient(request, id);
         return clientService.getClientById(id);
+    }
+    
+    @GetMapping("/{id}/orders")
+    public Page<OrderResponseDTO> getClientOrderHistory(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+        securityService.requireAdminOrSameClient(request, id);
+        Pageable pageable = PageRequest.of(page, size);
+        return orderService.getOrdersByClientId(id, pageable);
     }
 }

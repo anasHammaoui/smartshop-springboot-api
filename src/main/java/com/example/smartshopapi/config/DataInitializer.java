@@ -1,13 +1,8 @@
 package com.example.smartshopapi.config;
 
-import com.example.smartshopapi.entity.Client;
-import com.example.smartshopapi.entity.Product;
-import com.example.smartshopapi.entity.User;
-import com.example.smartshopapi.enums.CustomerTier;
-import com.example.smartshopapi.enums.UserRole;
-import com.example.smartshopapi.repository.ClientRepository;
-import com.example.smartshopapi.repository.ProductRepository;
-import com.example.smartshopapi.repository.UserRepository;
+import com.example.smartshopapi.entity.*;
+import com.example.smartshopapi.enums.*;
+import com.example.smartshopapi.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -23,6 +18,8 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
     private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
+    private final PaymentRepository paymentRepository;
     
     @Override
     public void run(String... args) throws Exception {
@@ -74,7 +71,25 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
             clientRepository.save(client3);
             
-            System.out.println("Sample clients created");
+            Client client4 = Client.builder()
+                    .name("MegaTech Industries")
+                    .email("orders@megatech.ma")
+                    .tier(CustomerTier.PLATINUM)
+                    .totalOrders(25)
+                    .totalSpent(new BigDecimal("18500.00"))
+                    .build();
+            clientRepository.save(client4);
+            
+            Client client5 = Client.builder()
+                    .name("StartupHub")
+                    .email("tech@startuphub.ma")
+                    .tier(CustomerTier.BASIC)
+                    .totalOrders(0)
+                    .totalSpent(BigDecimal.ZERO)
+                    .build();
+            clientRepository.save(client5);
+            
+            System.out.println("Sample clients created (5 records)");
         }
         
         if (productRepository.count() == 0) {
@@ -113,7 +128,48 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
             productRepository.save(product5);
             
-            System.out.println("Sample products created");
+            System.out.println("Sample products created (5 records)");
+        }
+        
+        if (orderRepository.count() == 0) {
+            Client client1 = clientRepository.findById(1L).orElse(null);
+            Product product1 = productRepository.findById(1L).orElse(null);
+            
+            if (client1 != null && product1 != null) {
+                for (int i = 1; i <= 5; i++) {
+                    Order order = Order.builder()
+                            .client(client1)
+                            .subtotal(new BigDecimal("1000.00"))
+                            .discountAmount(new BigDecimal("50.00"))
+                            .amountAfterDiscount(new BigDecimal("950.00"))
+                            .tax(new BigDecimal("190.00"))
+                            .totalAmount(new BigDecimal("1140.00"))
+                            .remainingAmount(BigDecimal.ZERO)
+                            .status(OrderStatus.CONFIRMED)
+                            .build();
+                    orderRepository.save(order);
+                }
+                System.out.println("Sample orders created (5 records)");
+            }
+        }
+        
+        if (paymentRepository.count() == 0) {
+            Order order1 = orderRepository.findById(1L).orElse(null);
+            if (order1 != null) {
+                for (int i = 1; i <= 5; i++) {
+                    Payment payment = Payment.builder()
+                            .order(order1)
+                            .paymentNumber(i)
+                            .amount(new BigDecimal("228.00"))
+                            .paymentType(PaymentType.CASH)
+                            .paymentDate(java.time.LocalDateTime.now())
+                            .status(PaymentStatus.ENCASHED)
+                            .encashmentDate(java.time.LocalDateTime.now())
+                            .build();
+                    paymentRepository.save(payment);
+                }
+                System.out.println("Sample payments created (5 records)");
+            }
         }
     }
 }
