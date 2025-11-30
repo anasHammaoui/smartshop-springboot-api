@@ -1,14 +1,20 @@
 package com.example.smartshopapi.service.impl;
 
+import com.example.smartshopapi.entity.Client;
 import com.example.smartshopapi.entity.User;
 import com.example.smartshopapi.enums.UserRole;
+import com.example.smartshopapi.repository.ClientRepository;
 import com.example.smartshopapi.service.SecurityService;
+import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class SecurityServiceImpl implements SecurityService {
+    
+    private final ClientRepository clientRepository;
     
     @Override
     public User getCurrentUser(HttpServletRequest request) {
@@ -46,9 +52,14 @@ public class SecurityServiceImpl implements SecurityService {
         }
         
         if (user.getRole() == UserRole.CLIENT) {
-            // For CLIENT role, we would need to check if the user is associated with this client
-            // This requires additional logic to link User to Client
-            // For now, we'll allow access (this should be implemented based on your user-client relationship)
+            // Find the client associated with this user
+            Client userClient = clientRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new RuntimeException("Client profile not found for user"));
+            
+            // Check if the requested clientId matches the user's client
+            if (!userClient.getId().equals(clientId)) {
+                throw new RuntimeException("Access denied. You can only access your own data");
+            }
             return;
         }
         

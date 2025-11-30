@@ -3,6 +3,8 @@ package com.example.smartshopapi.config;
 import com.example.smartshopapi.entity.*;
 import com.example.smartshopapi.enums.*;
 import com.example.smartshopapi.repository.*;
+
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -31,20 +33,59 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
             userRepository.save(admin);
             
-            User client = User.builder()
-                    .username("client")
-                    .password("client123")
+            User clientUser1 = User.builder()
+                    .username("techcorp")
+                    .password("techcorp123")
                     .role(UserRole.CLIENT)
                     .build();
-            userRepository.save(client);
+            userRepository.save(clientUser1);
+            
+            User clientUser2 = User.builder()
+                    .username("infosys")
+                    .password("infosys123")
+                    .role(UserRole.CLIENT)
+                    .build();
+            userRepository.save(clientUser2);
+            
+            User clientUser3 = User.builder()
+                    .username("digitalsol")
+                    .password("digital123")
+                    .role(UserRole.CLIENT)
+                    .build();
+            userRepository.save(clientUser3);
+            
+            User clientUser4 = User.builder()
+                    .username("megatech")
+                    .password("mega123")
+                    .role(UserRole.CLIENT)
+                    .build();
+            userRepository.save(clientUser4);
+            
+            User clientUser5 = User.builder()
+                    .username("startuphub")
+                    .password("startup123")
+                    .role(UserRole.CLIENT)
+                    .build();
+            userRepository.save(clientUser5);
             
             System.out.println("Default users created:");
             System.out.println("Admin - username: admin, password: admin123");
-            System.out.println("Client - username: client, password: client123");
+            System.out.println("Client1 - username: techcorp, password: techcorp123");
+            System.out.println("Client2 - username: infosys, password: infosys123");
+            System.out.println("Client3 - username: digitalsol, password: digital123");
+            System.out.println("Client4 - username: megatech, password: mega123");
+            System.out.println("Client5 - username: startuphub, password: startup123");
         }
         
         if (clientRepository.count() == 0) {
+            User techcorpUser = userRepository.findByUsername("techcorp").orElse(null);
+            User infosysUser = userRepository.findByUsername("infosys").orElse(null);
+            User digitalsolUser = userRepository.findByUsername("digitalsol").orElse(null);
+            User megatechUser = userRepository.findByUsername("megatech").orElse(null);
+            User startuphubUser = userRepository.findByUsername("startuphub").orElse(null);
+            
             Client client1 = Client.builder()
+                    .user(techcorpUser)
                     .name("TechCorp SARL")
                     .email("contact@techcorp.ma")
                     .tier(CustomerTier.SILVER)
@@ -54,6 +95,7 @@ public class DataInitializer implements CommandLineRunner {
             clientRepository.save(client1);
             
             Client client2 = Client.builder()
+                    .user(infosysUser)
                     .name("InfoSys Ltd")
                     .email("admin@infosys.ma")
                     .tier(CustomerTier.GOLD)
@@ -63,6 +105,7 @@ public class DataInitializer implements CommandLineRunner {
             clientRepository.save(client2);
             
             Client client3 = Client.builder()
+                    .user(digitalsolUser)
                     .name("Digital Solutions")
                     .email("contact@digitalsol.ma")
                     .tier(CustomerTier.BASIC)
@@ -72,6 +115,7 @@ public class DataInitializer implements CommandLineRunner {
             clientRepository.save(client3);
             
             Client client4 = Client.builder()
+                    .user(megatechUser)
                     .name("MegaTech Industries")
                     .email("orders@megatech.ma")
                     .tier(CustomerTier.PLATINUM)
@@ -81,6 +125,7 @@ public class DataInitializer implements CommandLineRunner {
             clientRepository.save(client4);
             
             Client client5 = Client.builder()
+                    .user(startuphubUser)
                     .name("StartupHub")
                     .email("tech@startuphub.ma")
                     .tier(CustomerTier.BASIC)

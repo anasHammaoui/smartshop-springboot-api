@@ -20,8 +20,7 @@ public class PaymentRequestDTO {
     
     @NotNull(message = "Payment type is required")
     private PaymentType paymentType;
-    
-    @NotNull(message = "Payment date is required")
+
     private LocalDateTime paymentDate;
     
     private String reference;

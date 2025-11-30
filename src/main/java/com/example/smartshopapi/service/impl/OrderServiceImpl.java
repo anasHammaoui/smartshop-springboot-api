@@ -151,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
             order.getStatus() == OrderStatus.CANCELED) {
             throw new RuntimeException("Cannot modify order with status: " + order.getStatus());
         }
-        
+
         if (status == OrderStatus.CONFIRMED) {
 
             if (order.getRemainingAmount().compareTo(BigDecimal.ZERO) > 0) {

@@ -66,6 +66,32 @@ public class ClientController {
         return clientService.getClientById(id);
     }
     
+    @GetMapping("/profile")
+    public ClientResponseDTO getMyProfile(HttpServletRequest request) {
+        var user = securityService.getCurrentUser(request);
+        if (user.getRole() != com.example.smartshopapi.enums.UserRole.CLIENT) {
+            throw new RuntimeException("Only clients can access this endpoint");
+        }
+        
+        var client = clientService.findClientByUserId(user.getId());
+        return clientService.getClientById(client.getId());
+    }
+    
+    @GetMapping("/orders")
+    public Page<OrderResponseDTO> getMyOrders(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+        var user = securityService.getCurrentUser(request);
+        if (user.getRole() != com.example.smartshopapi.enums.UserRole.CLIENT) {
+            throw new RuntimeException("Only clients can access this endpoint");
+        }
+        
+        var client = clientService.findClientByUserId(user.getId());
+        Pageable pageable = PageRequest.of(page, size);
+        return orderService.getOrdersByClientId(client.getId(), pageable);
+    }
+    
     @GetMapping("/{id}/orders")
     public Page<OrderResponseDTO> getClientOrderHistory(
             @PathVariable Long id,

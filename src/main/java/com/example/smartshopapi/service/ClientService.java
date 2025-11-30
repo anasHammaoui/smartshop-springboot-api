@@ -15,4 +15,5 @@ public interface ClientService {
     void deleteClient(Long id);
     Page<ClientResponseDTO> getAllClients(Pageable pageable);
     Client findClientEntity(Long id);
+    Client findClientByUserId(Long userId);
 }

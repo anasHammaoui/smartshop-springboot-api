@@ -11,6 +11,7 @@ import org.mapstruct.MappingTarget;
 public interface ClientMapper {
     
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "tier", ignore = true)
     @Mapping(target = "totalOrders", ignore = true)
     @Mapping(target = "totalSpent", ignore = true)
@@ -18,11 +19,15 @@ public interface ClientMapper {
     @Mapping(target = "lastOrderDate", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "email", target = "email")
     Client toEntity(ClientRequestDTO dto);
     
+    @Mapping(source = "user.username", target = "username")
     ClientResponseDTO toResponseDTO(Client entity);
     
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "tier", ignore = true)
     @Mapping(target = "totalOrders", ignore = true)
     @Mapping(target = "totalSpent", ignore = true)
@@ -30,5 +35,7 @@ public interface ClientMapper {
     @Mapping(target = "lastOrderDate", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "email", target = "email")
     void updateEntityFromDTO(ClientRequestDTO dto, @MappingTarget Client entity);
 }
